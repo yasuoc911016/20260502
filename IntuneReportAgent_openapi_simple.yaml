@@ -1,0 +1,139 @@
+openapi: 3.0.0
+info:
+  title: Microsoft Intune Reporting
+  description: |
+    Subset of Microsoft Graph deviceManagement endpoints used by the
+    IntuneReportAgent Security Copilot agent to generate device management
+    reports. All operations are GET. Authentication is AAD Delegated.
+  version: "1.0"
+servers:
+  - url: https://graph.microsoft.com
+paths:
+  /v1.0/deviceManagement/managedDevices:
+    get:
+      operationId: ListManagedDevices
+      summary: List Intune managed devices
+      description: |
+        Returns the collection of Intune-managed devices including compliance
+        state, OS, last sync time, and enrollment metadata.
+        #ExamplePrompts List all managed devices
+        #ExamplePrompts Show non-compliant Windows devices
+        #ExamplePrompts Get devices that have not synced in 30 days
+      responses:
+        "200":
+          description: Collection of managedDevice entities.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1.0/deviceManagement/managedDevices/{managedDeviceId}:
+    get:
+      operationId: GetManagedDevice
+      summary: Get a managed device by ID
+      description: |
+        Returns the full set of properties for a single Intune managed device.
+        #ExamplePrompts Get details of managed device {managedDeviceId}
+      parameters:
+        - in: path
+          name: managedDeviceId
+          schema:
+            type: string
+          required: true
+          description: The Intune managed device ID (GUID).
+      responses:
+        "200":
+          description: A managedDevice entity.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1.0/deviceManagement/deviceCompliancePolicyDeviceStateSummary:
+    get:
+      operationId: GetCompliancePolicySummary
+      summary: Get device compliance policy device-state summary
+      description: |
+        Returns aggregate counts of devices grouped by their compliance state
+        across all compliance policies (compliant, noncompliant, inGracePeriod,
+        configManager, error, conflict, notApplicable, remediated, unknown).
+        #ExamplePrompts Show overall compliance policy summary
+      responses:
+        "200":
+          description: deviceCompliancePolicyDeviceStateSummary entity.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1.0/deviceManagement/deviceConfigurationDeviceStateSummaries:
+    get:
+      operationId: GetConfigurationProfileSummary
+      summary: Get device configuration profile device-state summary
+      description: |
+        Returns aggregate counts of devices grouped by configuration profile
+        application state (compliant, conflict, error, nonCompliant, remediated,
+        notApplicable, unknown).
+        #ExamplePrompts Show configuration profile application summary
+      responses:
+        "200":
+          description: deviceConfigurationDeviceStateSummary entity.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1.0/deviceManagement/deviceCompliancePolicies:
+    get:
+      operationId: ListCompliancePolicies
+      summary: List device compliance policies
+      description: |
+        Returns the collection of Intune device compliance policies defined in
+        the tenant.
+        #ExamplePrompts List all compliance policies
+      responses:
+        "200":
+          description: Collection of deviceCompliancePolicy entities.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1.0/deviceAppManagement/mobileApps:
+    get:
+      operationId: ListMobileApps
+      summary: List Intune managed mobile apps
+      description: |
+        Returns the collection of mobile apps managed by Intune.
+        #ExamplePrompts List all managed apps
+        #ExamplePrompts Show Win32 apps
+      responses:
+        "200":
+          description: Collection of mobileApp entities.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1.0/deviceAppManagement/mobileApps/{mobileAppId}/deviceStatuses:
+    get:
+      operationId: GetMobileAppDeviceStatuses
+      summary: Get device install status for a mobile app
+      description: |
+        Returns the install status of the specified mobile app on each
+        targeted device, useful for diagnosing app deployment failures.
+        #ExamplePrompts Show install status for app {mobileAppId}
+      parameters:
+        - in: path
+          name: mobileAppId
+          schema:
+            type: string
+          required: true
+          description: The mobileApp ID.
+      responses:
+        "200":
+          description: Collection of mobileAppInstallStatus entities.
+          content:
+            application/json:
+              schema:
+                type: object
